@@ -24,8 +24,8 @@ lastDataReceivedTime = time()
 def callback(data):
 	global lastDataReceivedTime
 	lastDataReceivedTime = time()
-	RPower = int((motorPower * data.linear.x)/MAXRANGE) - int((motorPower * data.angular.z)/MAXRANGE)
-	LPower = int((motorPower * data.linear.x)/MAXRANGE) + int((motorPower * data.angular.z)/MAXRANGE)
+	RPower = int((motorPower * data.linear.x)/MAXRANGE) + int((motorPower * data.angular.z)/MAXRANGE)
+	LPower = int((motorPower * data.linear.x)/MAXRANGE) - int((motorPower * data.angular.z)/MAXRANGE)
 	if DEBUG:	
 		print 'Direct: ' + str(RPower) + ' ' + str(LPower)
 	if ENABLE_MOTORS:
@@ -37,7 +37,6 @@ def watchdog():
 	while not rospy.is_shutdown():
 		if (lastDataReceivedTime + 0.5) < time():
 			MotorDriverPort.write('Set 0 0 0 0 0 0\n')
-			print "Setting zeros..."
 		sleep(0.1)
 
 watchdog_thread = threading.Thread(target=watchdog)
@@ -88,6 +87,7 @@ try:
 		   continue
 
 		MotorDriverPort = openedPort[motorDriverIndex]
+		DAU_connected = True
 
 finally:
 	pass
@@ -106,7 +106,5 @@ try:
       rospy.spin()
 
 finally:
-      #print '0 0'
-      connection.close()
       MotorDriverPort.write('Set 0 0 0 0 0 0\n')
       MotorDriverPort.close()
