@@ -14,7 +14,7 @@ from geometry_msgs.msg import Twist
 rospy.init_node('Teleop_listener', anonymous=True)
 
 ENABLE_MOTORS = True
-DEBUG = False
+DEBUG = True
 
 MAXRANGE=1.0
 motorPower = 180
