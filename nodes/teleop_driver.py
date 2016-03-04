@@ -17,7 +17,7 @@ ENABLE_MOTORS = True
 DEBUG = True
 
 MAXRANGE=1.0
-motorPower = 180
+motorPower = 240.0
 
 lastDataReceivedTime = time()
 
@@ -29,6 +29,8 @@ def callback(data):
 	if DEBUG:	
 		print 'Direct: ' + str(RPower) + ' ' + str(LPower)
 	if ENABLE_MOTORS:
+		MotorDriverPort.write('Set '+ str(LPower) +' '+ str(RPower) +' '+ str(LPower) +' '+ str(RPower) +' '+ str(LPower) +' '+ str(RPower) +'\n')
+		sleep(0.05)
 		MotorDriverPort.write('Set '+ str(LPower) +' '+ str(RPower) +' '+ str(LPower) +' '+ str(RPower) +' '+ str(LPower) +' '+ str(RPower) +'\n')
 
 
