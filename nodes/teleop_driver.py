@@ -17,7 +17,7 @@ ENABLE_MOTORS = True
 DEBUG = True
 
 MAXRANGE=1.0
-motorPower = 180
+motorPower = 130
 
 lastDataReceivedTime = time()
 
