@@ -5,9 +5,11 @@ import pygame
 import rospy
 import numpy as np
 from geometry_msgs.msg import Twist
+import os
 
 class PadDriver:
     def __init__(self, name='PLAYSTATION(R)3 Controller'):
+        self.shutdownCounter = 0
         self.Pad = []
         pygame.init()
         pygame.joystick.init()
@@ -35,7 +37,16 @@ class PadDriver:
         
         linear = 0.5 * (Axes[13] - Axes[12]) + Buttons[14] * 0.5 * (Axes[13] - Axes[12])
         angular = 0.5 * Axes[0] + Buttons[14] * 0.5 * Axes[0]
-        
+
+	if Buttons[3]:
+	    self.shutdownCounter += 1
+	else:
+	    self.shutdownCounter = 0
+
+	if self.shutdownCounter>30:
+            print "Shutdown command detected!"
+            os.system("sudo shutdown -h now")        
+
         self.ROS_Publish(linear, angular)
     
     def ROS_InitNode(self):
