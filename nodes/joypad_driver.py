@@ -1,10 +1,12 @@
 #!/usr/bin/python
 
-
+import time
 import pygame
 import rospy
 import numpy as np
 from geometry_msgs.msg import Twist
+
+
 
 class PadDriver:
     def __init__(self, name='PLAYSTATION(R)3 Controller'):
@@ -26,7 +28,7 @@ class PadDriver:
         
         Axes = []
         Buttons = []
-        
+
         for i in range(numAxes):
             Axes = np.append(Axes, self.Pad.get_axis(i))
         
@@ -47,17 +49,17 @@ class PadDriver:
         message = Twist()        
         message.linear.x = linear
         message.angular.z = angular
-        rospy.loginfo(message)
+        #rospy.loginfo(message)
         self.pub.publish(message)
         
     def ROS_spin(self):
         self.rate.sleep()
         
-        
-Pad = PadDriver()
-Pad.ROS_InitNode()
 
-try:
+try:        
+    Pad = PadDriver()
+    Pad.ROS_InitNode()
+
     while not rospy.is_shutdown():
         Pad.sendValues()
         Pad.ROS_spin()
