@@ -16,7 +16,7 @@ rospy.init_node('Teleop_listener', anonymous=True)
 ENABLE_MOTORS = True
 DEBUG = True
 
-MAXRANGE=1.0
+MAXRANGE = 1.0
 
 motorPower = 240.0
 
@@ -26,14 +26,16 @@ lastDataReceivedTime = time()
 def callback(data):
 	global lastDataReceivedTime
 	lastDataReceivedTime = time()
-	RPower = int((motorPower * data.linear.x)/MAXRANGE) + int((motorPower * data.angular.z)/MAXRANGE)
-	LPower = int((motorPower * data.linear.x)/MAXRANGE) - int((motorPower * data.angular.z)/MAXRANGE)
+	RPower = int((motorPower * data.linear.x)/MAXRANGE) - int((motorPower * data.angular.z)/MAXRANGE)
+	RPower = min((RPower, 255))
+	LPower = int((motorPower * data.linear.x)/MAXRANGE) + int((motorPower * data.angular.z)/MAXRANGE)
+	LPower = min((LPower, 255))
 	if DEBUG:	
 		print 'Direct: ' + str(RPower) + ' ' + str(LPower)
 	if ENABLE_MOTORS:
-		MotorDriverPort.write('Set '+ str(LPower) +' '+ str(RPower) +' '+ str(LPower) +' '+ str(RPower) +' '+ str(LPower) +' '+ str(RPower) +'\n')
+		MotorDriverPort.write('Set '+ str(LPower) +' '+ str(RPower) +' '+ str(LPower) +' '+ str(int(1.5*RPower)) +' '+ str(LPower) +' '+ str(RPower) +'\n')
 		sleep(0.05)
-		MotorDriverPort.write('Set '+ str(LPower) +' '+ str(RPower) +' '+ str(LPower) +' '+ str(RPower) +' '+ str(LPower) +' '+ str(RPower) +'\n')
+		MotorDriverPort.write('Set '+ str(LPower) +' '+ str(RPower) +' '+ str(LPower) +' '+ str(int(1.5*RPower)) +' '+ str(LPower) +' '+ str(RPower) +'\n')
 
 
 def watchdog():

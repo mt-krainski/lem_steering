@@ -13,6 +13,7 @@ class PadDriver:
     def __init__(self, name='PLAYSTATION(R)3 Controller'):
         self.shutdownCounter = 0
         self.Pad = []
+
         pygame.init()
         pygame.joystick.init()
         joysticks = [pygame.joystick.Joystick(x) for x in range(pygame.joystick.get_count())]
@@ -20,6 +21,7 @@ class PadDriver:
             if 'PLAYSTATION(R)3 Controller' in joy.get_name():
                 self.Pad = joy
                 break
+
 
         self.Pad.init()
 
@@ -37,8 +39,8 @@ class PadDriver:
         for i in range(numButtons):
             Buttons = np.append(Buttons, self.Pad.get_button(i))
         
-        linear = 0.5 * (Axes[13] - Axes[12]) + Buttons[14] * 0.5 * (Axes[13] - Axes[12])
-        angular = 0.5 * Axes[0] + Buttons[14] * 0.5 * Axes[0]
+        linear = 0.7 * (Axes[13] - Axes[12]) + Buttons[14] * 0.3 * (Axes[13] - Axes[12])
+        angular = 0.7 * Axes[0] + Buttons[14] * 0.3 * Axes[0]
 
 	if Buttons[3]:
 	    self.shutdownCounter += 1
