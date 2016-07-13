@@ -1,13 +1,16 @@
 #!/usr/bin/python
 
 import time
+from time import sleep
 import pygame
 import rospy
 import numpy as np
 from geometry_msgs.msg import Twist
 import os
 
+import serial
 
+gimball_port = serial.Serial('/dev/ttyACM0', 9600, timeout=1)
 
 class PadDriver:
     def __init__(self, name='PLAYSTATION(R)3 Controller'):
@@ -39,43 +42,22 @@ class PadDriver:
         for i in range(numButtons):
             Buttons = np.append(Buttons, self.Pad.get_button(i))
 
-        linear = 0.7 * (Axes[13] - Axes[12]) + Buttons[14] * 0.3 * (Axes[13] - Axes[12])
-        angular = 0.7 * Axes[0] + Buttons[14] * 0.3 * Axes[0]
+        azimuth = int((Axes[2]+1.0)/2.0 * 180)
+        elevation = int((Axes[3]+1.0)/2.0 * 180)
 
-	if Buttons[3]:
-	    self.shutdownCounter += 1
-	else:
-	    self.shutdownCounter = 0
+        gimball_port.write('P'+str(azimuth)+'\n')
+        print gimball_port.readline()
+        gimball_port.write('Y'+str(elevation)+'\n')
 
-	if self.shutdownCounter>30:
-            print "Shutdown command detected!"
-            os.system("sudo shutdown -h now")
-
-        self.ROS_Publish(linear, angular)
-
-    def ROS_InitNode(self):
-        self.pub = rospy.Publisher('cmd_vel', Twist, queue_size=10)
-        rospy.init_node('Pad_driver', anonymous=True)
-        self.rate = rospy.Rate(10)
-
-    def ROS_Publish(self, linear, angular):
-        message = Twist()
-        message.linear.x = linear
-        message.angular.z = angular
-        #rospy.loginfo(message)
-        self.pub.publish(message)
-
-    def ROS_spin(self):
-        self.rate.sleep()
+        print gimball_port.readline()
 
 
 try:
     Pad = PadDriver()
-    Pad.ROS_InitNode()
 
-    while not rospy.is_shutdown():
+    while 1:
         Pad.sendValues()
-        Pad.ROS_spin()
+        sleep(0.01)
 
 except rospy.ROSInterruptException:
     pass
