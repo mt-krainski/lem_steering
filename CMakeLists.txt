@@ -146,6 +146,13 @@ catkin_package(
 #   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 # )
 
+ install(PROGRAMS
+   nodes/joypad_driver.py
+   nodes/quickstart_driver.py
+   nodes/teleop_driver.py
+   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+ )
+
 ## Mark executables and/or libraries for installation
 # install(TARGETS lem_steering lem_steering_node
 #   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
@@ -161,11 +168,11 @@ catkin_package(
 # )
 
 ## Mark other files for installation (e.g. launch and bag files, etc.)
-# install(FILES
-#   # myfile1
-#   # myfile2
-#   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
-# )
+ install(FILES
+   launch/mapping_lem.launch
+   # myfile2
+   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+ )
 
 #############
 ## Testing ##
