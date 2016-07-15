@@ -45,20 +45,19 @@ class PadDriver:
 
     def sendValues(self):
         pygame.event.get()
-	with suppress_stdout():
-	    numAxes = self.Pad.get_numaxes()
-	with suppress_stdout():
-            numButtons = self.Pad.get_numbuttons()
-        
+
+        numAxes = self.Pad.get_numaxes()
+        numButtons = self.Pad.get_numbuttons()
+
         Axes = []
         Buttons = []
 
         for i in range(numAxes):
             Axes = np.append(Axes, self.Pad.get_axis(i))
-        
+
         for i in range(numButtons):
             Buttons = np.append(Buttons, self.Pad.get_button(i))
-        
+
         linear = 0.7 * (Axes[13] - Axes[12]) + Buttons[14] * 0.3 * (Axes[13] - Axes[12])
         if abs(Axes[0])<0.2:
 		Axes[0] = 0
@@ -74,7 +73,7 @@ class PadDriver:
 
 	if self.shutdownCounter>30:
             print "Shutdown command detected!"
-            os.system("sudo shutdown -h now")        
+            os.system("sudo shutdown -h now")
 
 	if Buttons[0]:
 	    if not self.selectPressed:
@@ -104,6 +103,7 @@ class PadDriver:
 	if self.publish:
 	    self.ROS_Publish(self.limitPower[0]*linear, self.limitPower[1]*angular,  grasperRoll, grasperPitch)
     
+
     def ROS_InitNode(self):
         self.pub = rospy.Publisher('cmd_vel', Twist, queue_size=10)
         rospy.init_node('Pad_driver', anonymous=True)
@@ -111,30 +111,27 @@ class PadDriver:
         
     def ROS_Publish(self, linear, angular, grasperRoll, grasperPitch):
         message = Twist()        
+
         message.linear.x = linear
         message.angular.z = angular
 	message.angular.y = grasperRoll
         message.angular.x = grasperPitch
         #rospy.loginfo(message)
+
 	if self.publish:
 	    self.pub.publish(message)
         
     def ROS_spin(self):
         self.rate.sleep()
-        
 
-try:        
+
+try:
     Pad = PadDriver()
     Pad.ROS_InitNode()
 
     while not rospy.is_shutdown():
         Pad.sendValues()
         Pad.ROS_spin()
-        
+
 except rospy.ROSInterruptException:
     pass
-    
-        
-        
-        
-        
