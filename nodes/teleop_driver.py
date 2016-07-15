@@ -23,7 +23,7 @@ rospy.init_node('Teleop_listener', anonymous=True)
 battery_pub = rospy.Publisher('battery', BatteryState, queue_size=10)
 
 ENABLE_MOTORS = True
-DEBUG = True
+DEBUG = False
 
 MAXRANGE = 1.0
 
@@ -52,6 +52,7 @@ def watchdog():
 	while not rospy.is_shutdown():
 		if (lastDataReceivedTime + 0.5) < time():
 			MotorDriverPort.write('Set 0 0 0 0 0 0\n')
+			print 'Direct: 0 0 '
 		sleep(0.1)
 
 watchdog_thread = threading.Thread(target=watchdog)
@@ -85,15 +86,25 @@ def battery_republisher():
 		MotorDriverPort.write('GetBatTotal\n')
 		sleep(0.05)
 		recv_data = MotorDriverPort.readline()
+		print recv_data
 
 	#	print recv_data
 
 		bat_status.header.stamp = rospy.Time.now()
-		bat_status.voltage = float(recv_data)
-		bat_status.percentage = bat_status.voltage/BAT_FULL
-		bat_status.present = bat_status.voltage<BAT_FULL and bat_status.voltage>BAT_MIN
 
-		battery_pub.publish(bat_status)
+
+		try:
+			bat_status.voltage = float(recv_data)
+			bat_status.percentage = bat_status.voltage/BAT_FULL
+			bat_status.present = bat_status.voltage<BAT_FULL and bat_status.voltage>BAT_MIN
+
+			battery_pub.publish(bat_status)
+
+		except:
+			if DEBUG:
+				print "Receive Error"
+			else:
+				pass
 
 		sleep(0.01)
 
