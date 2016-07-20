@@ -47,6 +47,7 @@ find_package(catkin REQUIRED
  add_message_files(
    FILES
    BatteryState.msg
+   LemArm.msg
  )
 
 ## Generate services in the 'srv' folder
@@ -148,6 +149,7 @@ catkin_package(
 install(PROGRAMS
    nodes/joypad_driver.py
    nodes/teleop_driver.py
+   nodes/arm_driver.py
    DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
  )
 

@@ -42,9 +42,9 @@ def callback(data):
 	if DEBUG:
 		print 'Direct: ' + str(RPower) + ' ' + str(LPower)
 	if ENABLE_MOTORS:
-		MotorDriverPort.write('Set '+ str(LPower) +' '+ str(RPower) +' '+ str(LPower) +' '+ str(int(1.5*RPower)) +' '+ str(LPower) +' '+ str(RPower) +'\n')
+		MotorDriverPort.write('Set '+ str(LPower) +' '+ str(RPower) +' '+ str(LPower) +' '+ str(RPower) +' '+ str(LPower) +' '+ str(RPower) +'\n')
 		sleep(0.05)
-		MotorDriverPort.write('Set '+ str(LPower) +' '+ str(RPower) +' '+ str(LPower) +' '+ str(int(1.5*RPower)) +' '+ str(LPower) +' '+ str(RPower) +'\n')
+		MotorDriverPort.write('Set '+ str(LPower) +' '+ str(RPower) +' '+ str(LPower) +' '+ str(RPower) +' '+ str(LPower) +' '+ str(RPower) +'\n')
 
 
 def watchdog():
