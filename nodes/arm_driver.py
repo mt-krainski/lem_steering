@@ -14,7 +14,7 @@ from geometry_msgs.msg import Twist
 
 rospy.init_node('Arm_republisher', anonymous=True)
 
-ENABLE_MOTORS = False
+ENABLE_MOTORS = True
 DEBUG = True
 
 MAXRANGE = 1.0
@@ -46,14 +46,14 @@ def callback(data):
         rospy.loginfo('Direct: ' + str(base) + ' ' + str(joint0) + ' ' + str(joint1) + ' ' + str(graspR) + ' ' + str(graspL) + ' ' + str(graspClose))
 
     if ENABLE_MOTORS:
-        ArmDriverPort.write('Set: ' + str(base) + ' ' + str(joint0) + ' ' + str(joint1) + ' ' + str(graspR) + ' ' + str(graspL) + ' ' + str(graspClose) +'\n')
+        ArmDriverPort.write('ChwytSet ' + str(base) + ' ' + str(joint0) + ' ' + str(joint1) + ' ' + str(graspR) + ' ' + str(graspL) + ' ' + str(graspClose) +'\n')
 
 def watchdog():
     global lastDataReceivedTime
     while not rospy.is_shutdown():
         if (lastDataReceivedTime + 0.5) < time():
             if ENABLE_MOTORS:
-                ArmDriverPort.write('Set 0 0 0 0 0 0 0\n')
+                ArmDriverPort.write('ChwytSet 0 0 0 0 0 0 0\n')
             if DEBUG:
                 rospy.loginfo('Watchdog: 0 0 0 0 0 0 0')
 		sleep(0.1)
@@ -89,7 +89,7 @@ if ENABLE_MOTORS:
     		for i in range(0, len(openedPort)):
     		   if openedPort[i].isOpen():
     		      openedPort[i].write('GET\n')
-    		      sleep(0.1)
+    		      sleep(0.5)
     		      portFunctions.append(openedPort[i].readline())
     		   else:
     		      portFunctions.append('Closed')
